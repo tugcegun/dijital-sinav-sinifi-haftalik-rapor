@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haftalık Teknik Durum Raporu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+            line-height: 1.5;
+        }
+        
+        .tabs {
+            max-width: 900px;
+            margin: 0 auto 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 15px;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .tab-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #161A30 0%, #31304D 100%);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #161A30 0%, #31304D 100%);
+            color: white;
+            padding: 30px 40px;
+            border-bottom: 4px solid #161A30;
+        }
+        
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .school-info h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .school-info p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #B6BBC4;
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        .report-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .info-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #161A30;
+        }
+        
+        .info-field label {
+            display: block;
+            font-weight: 600;
+            color: #424242;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .info-field input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .info-field input:focus {
+            outline: none;
+            border-color: #161A30;
+        }
+
+        .invalid {
+            border-color: #f44336 !important;
+            box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.15);
+        }
+
+        
+        .section-title {
+            background: #31304D;
+            color: white;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 30px 0 20px 0;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        table thead {
+            background: #B6BBC4;
+            color: white;
+        }
+        
+        table th {
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #ddd;
+        }
+        
+        table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        table tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        table tbody tr:hover {
+            background: #e3f2fd;
+        }
+        
+        .status-select {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            font-size: 13px;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 60px;
+            font-size: 13px;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #31304D;
+        }
+        
+        .summary-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .summary-box {
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .summary-box h3 {
+            font-size: 14px;
+            color: #31304D;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .summary-box textarea {
+            min-height: 100px;
+        }
+        
+        .signature-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .signature-box {
+            text-align: center;
+        }
+        
+        .signature-box label {
+            display: block;
+            font-weight: 600;
+            color: #424242;
+            margin-bottom: 10px;
+        }
+        
+        .signature-line {
+            border-top: 2px solid #000;
+            margin: 60px 20px 10px 20px;
+        }
+        
+        .signature-box p {
+            font-size: 13px;
+            color: #616161;
+            margin-top: 5px;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-save {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+        
+        .btn-save:hover {
+            background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-pdf {
+            background: linear-gradient(135deg, #31304D 0%, #161A30 100%);
+            color: white;
+        }
+        
+        .btn-pdf:hover {
+            background: linear-gradient(135deg, #31304D 0%, #161A30 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+        
+        .footer-note {
+            text-align: center;
+            color: #616161;
+            font-size: 12px;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .success-message {
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .success-message.show {
+            display: flex;
+        }
+        
+        /* Kayıtlı Raporlar Sekmesi */
+        .reports-list {
+            padding: 20px;
+        }
+        
+        .report-item {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #2196F3;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .report-info h3 {
+            color: #1e3c72;
+            margin-bottom: 5px;
+        }
+        
+        .report-info p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .report-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-view {
+            background: #2196F3;
+            color: white;
+        }
+        
+        .btn-view:hover {
+            background: #1976D2;
+        }
+        
+        .btn-delete {
+            background: #f44336;
+            color: white;
+        }
+        
+        .btn-delete:hover {
+            background: #d32f2f;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .tabs, .action-buttons, .footer-note, .success-message {
+                display: none !important;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .info-section, .summary-section, .signature-section, .action-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .report-item {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .report-actions {
+                width: 100%;
+                justify-content: stretch;
+            }
+            
+            .btn-small {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="tabs">
+        <button class="tab-button active" onclick="switchTab('new-report', event)">📝 Yeni Rapor</button>
+        <button class="tab-button" onclick="switchTab('saved-reports', event)">📁 Kayıtlı Raporlar</button>
+    </div>
+
+    <div id="new-report" class="tab-content active">
+        <div class="success-message" id="successMessage">
+            <span>✅</span>
+            <span>Rapor başarıyla "Haftalık Dijital Sınav Sınıfı Kontrol" klasörüne kaydedildi!</span>
+        </div>
+        
+        <div class="container" id="reportContainer">
+            <div class="header">
+                <div class="header-top">
+                    <div class="school-info">
+                        <h1>A&T Okulları</h1>
+                        <p>Dijital Sınav Sınıfı Projesi</p>
+                    </div>
+                    <div class="logo-placeholder">
+                       <img src="logo.png" alt="Logo" height="150px" weight="150px">
+                    </div>
+                </div>
+                <div class="report-title">
+                    📊 HAFTALIK TEKNİK DURUM RAPORU
+                </div>
+            </div>
+            
+            <div class="content">
+                <div class="info-section">
+                    <div class="info-field">
+                        <label>Rapor Tarihi:</label>
+                        <input type="date" id="reportDate" required>
+                    </div>
+                    <div class="info-field">
+                        <label>Hafta:</label>
+                        <input type="text" id="weekRange" placeholder="Örn: 1-7 Ocak 2025" required>
+                    </div>
+                    <div class="info-field">
+                        <label>Rapor Hazırlayan:</label>
+                        <input type="text" id="reportPreparer" placeholder="BT Koordinatörü Adı" required>
+                    </div>
+                </div>
+                
+                <div class="section-title">
+                    🔧 Donanım Kontrol Tablosu
+                </div>
+                
+                <div class="table-container">
+                    <table id="hardwareTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">Kabin No</th>
+                                <th style="width: 15%;">Bilgisayar</th>
+                                <th style="width: 15%;">Ekran</th>
+                                <th style="width: 15%;">Kamera</th>
+                                <th style="width: 15%;">İnternet</th>
+                                <th style="width: 35%;">Tespit Edilen Sorun</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>
+                                    <select class="status-select hardware-pc-1">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-screen-1">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-camera-1">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-internet-1">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="hardware-issue-1" placeholder="Sorun açıklaması (varsa)"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>
+                                    <select class="status-select hardware-pc-2">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-screen-2">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-camera-2">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-internet-2">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="hardware-issue-2" placeholder="Sorun açıklaması (varsa)"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>
+                                    <select class="status-select hardware-pc-3">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-screen-3">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-camera-3">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-internet-3">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="hardware-issue-3" placeholder="Sorun açıklaması (varsa)"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>
+                                    <select class="status-select hardware-pc-4">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-screen-4">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-camera-4">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-internet-4">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="hardware-issue-4" placeholder="Sorun açıklaması (varsa)"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>
+                                    <select class="status-select hardware-pc-5">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-screen-5">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-camera-5">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-internet-5">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="hardware-issue-5" placeholder="Sorun açıklaması (varsa)"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>
+                                    <select class="status-select hardware-pc-6">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-screen-6">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-camera-6">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-internet-6">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="hardware-issue-6" placeholder="Sorun açıklaması (varsa)"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>
+                                    <select class="status-select hardware-pc-7">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-screen-7">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-camera-7">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-internet-7">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="hardware-issue-7" placeholder="Sorun açıklaması (varsa)"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>
+                                    <select class="status-select hardware-pc-8">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-screen-8">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-camera-8">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-internet-8">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="hardware-issue-8" placeholder="Sorun açıklaması (varsa)"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>
+                                    <select class="status-select hardware-pc-9">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-screen-9">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-camera-9">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-internet-9">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="hardware-issue-9" placeholder="Sorun açıklaması (varsa)"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td>
+                                    <select class="status-select hardware-pc-10">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-screen-10">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-camera-10">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-internet-10">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="hardware-issue-10" placeholder="Sorun açıklaması (varsa)"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>11</td>
+                                <td>
+                                    <select class="status-select hardware-pc-11">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-screen-11">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-camera-11">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-internet-11">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="hardware-issue-11" placeholder="Sorun açıklaması (varsa)"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>12</td>
+                                <td>
+                                    <select class="status-select hardware-pc-12">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-screen-12">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-camera-12">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="status-select hardware-internet-12">
+                                        <option value="calisiyor">✅ Çalışıyor</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="arizali">❌ Arızalı</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="hardware-issue-12" placeholder="Sorun açıklaması (varsa)"></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="section-title">
+                    💻 Yazılım Erişim Testi
+                </div>
+                
+                <div class="table-container">
+                    <table id="softwareTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;">Test Edilen Yazılım/Platform</th>
+                                <th style="width: 20%;">Durum</th>
+                                <th style="width: 40%;">Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Dijital Sınav Yazılımı</td>
+                                <td>
+                                    <select class="status-select software-status-0">
+                                        <option value="calisiyor">✅ Erişilebilir</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="erisim-yok">❌ Erişim Yok</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="software-desc-0" placeholder="Varsa sorun detayı"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>Gözetmen Paneli</td>
+                                <td>
+                                    <select class="status-select software-status-1">
+                                        <option value="calisiyor">✅ Erişilebilir</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="erisim-yok">❌ Erişim Yok</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="software-desc-1" placeholder="Varsa sorun detayı"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>Kamera Kayıt Sistemi</td>
+                                <td>
+                                    <select class="status-select software-status-2">
+                                        <option value="calisiyor">✅ Erişilebilir</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="erisim-yok">❌ Erişim Yok</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="software-desc-2" placeholder="Varsa sorun detayı"></textarea></td>
+                            </tr>
+                            <tr>
+                                <td>Veri Yedekleme Sistemi</td>
+                                <td>
+                                    <select class="status-select software-status-3">
+                                        <option value="calisiyor">✅ Erişilebilir</option>
+                                        <option value="sorunlu">⚠️ Sorunlu</option>
+                                        <option value="erisim-yok">❌ Erişim Yok</option>
+                                    </select>
+                                </td>
+                                <td><textarea class="software-desc-3" placeholder="Varsa sorun detayı"></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="section-title">
+                    🛠️ Müdahale ve Çözüm Kayıtları
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Sorun Türü</th>
+                                <th style="width: 15%;">Tespit Zamanı</th>
+                                <th style="width: 15%;">Müdahale Süresi</th>
+                                <th style="width: 20%;">Çözüm Durumu</th>
+                                <th style="width: 25%;">Açıklama</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><textarea id="problemType" placeholder="Sorun türü"></textarea></td>
+                                <td><input type="time" id="detectionTime" class="status-select"></td>
+                                <td><input type="text" id="interventionTime" class="status-select" placeholder="dk"></td>
+                                <td>
+                                    <select id="solutionStatus" class="status-select">
+                                        <option value="">Seçiniz</option>
+                                        <option value="cozuldu">✅ Çözüldü</option>
+                                        <option value="devam-ediyor">⏳ Devam Ediyor</option>
+                                        <option value="beklemede">⏸️ Beklemede</option>
+                                        <option value="cozulemedi">❌ Çözülemedi</option>
+                                    </select>
+                                </td>
+                                <td><textarea id="solutionDetail" placeholder="Çözüm detayı"></textarea></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="summary-section">
+                    <div class="summary-box">
+                        <h3>📋 Genel Değerlendirme ve Öneriler</h3>
+                        <textarea id="generalEvaluation" placeholder="Bu hafta genel teknik durumu, tespit edilen sistemik sorunları ve iyileştirme önerilerini yazınız..."></textarea>
+                    </div>
+                    
+                    <div class="summary-box">
+                        <h3>📌 Gelecek Hafta İçin Planlanan İşler</h3>
+                        <textarea id="nextWeekPlans" placeholder="Gelecek hafta yapılması planlanan bakım, güncelleme veya geliştirme çalışmalarını yazınız..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="signature-section">
+                    <div class="signature-box">
+                        <label>BT Koordinatörü</label>
+                        <div class="signature-line"></div>
+                        <p>Ad Soyad / İmza / Tarih</p>
+                    </div>
+                    
+                    <div class="signature-box">
+                        <label>Okul Müdürü (Onay)</label>
+                        <div class="signature-line"></div>
+                        <p>Ad Soyad / İmza / Tarih</p>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-save" onclick="saveReport()">
+                        💾 Raporu Kaydet
+                    </button>
+                    <button class="btn btn-pdf" onclick="downloadPDF()">
+                        🖨️ PDF İndir
+                    </button>
+                </div>
+                
+                <div class="footer-note">
+                    <p><strong>Not:</strong> Bu rapor Jones (2005) Teknoloji Planlama Modeli çerçevesinde hazırlanmıştır.</p>
+                    <p>© 2025 Dijital Sınav Sınıfı Projesi | Haftalık Teknik Durum Raporu</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="saved-reports" class="tab-content">
+        <div class="container">
+            <div class="header">
+                <div class="report-title">
+                    📁 Kayıtlı Haftalık Raporlar
+                </div>
+            </div>
+            <div class="reports-list" id="reportsList">
+                <div class="empty-state">
+                    <svg fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z"></path>
+                        <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"></path>
+                    </svg>
+                    <h3>Henüz kaydedilmiş rapor bulunmuyor</h3>
+                    <p>Yeni bir rapor oluşturmak için "Yeni Rapor" sekmesine gidin</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Sekme değiştirme
+        
+        // Sekme değiştirme
+        window.switchTab = function(tabName, ev) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+
+            // Butonun aktif görünmesi (event güvenli)
+            const targetBtn = (ev && ev.currentTarget) ? ev.currentTarget : null;
+            if (targetBtn) {
+                targetBtn.classList.add('active');
+            } else {
+                // Fallback: tabName'e göre seç
+                const idx = tabName === 'new-report' ? 0 : 1;
+                const btns = document.querySelectorAll('.tab-button');
+                if (btns[idx]) btns[idx].classList.add('active');
+            }
+
+            if (tabName === 'saved-reports') {
+                loadReports();
+            }
+        }
+
+        // Zorunlu alan kontrolü
+        function validateRequiredFields() {
+            const requiredFields = [
+                { el: document.getElementById('reportDate'), name: 'Rapor Tarihi' },
+                { el: document.getElementById('weekRange'), name: 'Hafta' },
+                { el: document.getElementById('reportPreparer'), name: 'Rapor Hazırlayan' }
+            ];
+
+            // önce temizle
+            requiredFields.forEach(f => f.el.classList.remove('invalid'));
+
+            const missing = requiredFields.filter(f => !String(f.el.value || '').trim());
+            if (missing.length > 0) {
+                missing.forEach(f => f.el.classList.add('invalid'));
+                alert(`⚠️ Lütfen zorunlu alanları doldurun:\n\n- ${missing.map(m => m.name).join('\n- ')}`);
+                missing[0].el.focus();
+                return false;
+            }
+            return true;
+        }
+
+        // Rapor kaydetme
+
+        window.saveReport = function() {
+            if (!validateRequiredFields()) return;
+
+            const reportData = {
+                id: Date.now(),
+                date: document.getElementById('reportDate').value,
+                weekRange: document.getElementById('weekRange').value,
+                preparer: document.getElementById('reportPreparer').value,
+                hardware: [],
+                software: [],
+                problem: {
+                    type: document.getElementById('problemType').value,
+                    detectionTime: document.getElementById('detectionTime').value,
+                    interventionTime: document.getElementById('interventionTime').value,
+                    solutionStatus: document.getElementById('solutionStatus').value,
+                    solutionDetail: document.getElementById('solutionDetail').value
+                },
+                generalEvaluation: document.getElementById('generalEvaluation').value,
+                nextWeekPlans: document.getElementById('nextWeekPlans').value,
+                savedAt: new Date().toLocaleString('tr-TR')
+            };
+            
+            // Donanım verilerini topla
+            for (let i = 1; i <= 12; i++) {
+                reportData.hardware.push({
+                    cabin: i,
+                    pc: document.querySelector(`.hardware-pc-${i}`).value,
+                    screen: document.querySelector(`.hardware-screen-${i}`).value,
+                    camera: document.querySelector(`.hardware-camera-${i}`).value,
+                    internet: document.querySelector(`.hardware-internet-${i}`).value,
+                    issue: document.querySelector(`.hardware-issue-${i}`).value
+                });
+            }
+            
+            // Yazılım verilerini topla
+            for (let i = 0; i < 4; i++) {
+                reportData.software.push({
+                    status: document.querySelector(`.software-status-${i}`).value,
+                    description: document.querySelector(`.software-desc-${i}`).value
+                });
+            }
+            
+            // Raporları kaydet
+            let reports = JSON.parse(localStorage.getItem('weeklyReports') || '[]');
+            reports.unshift(reportData);
+            localStorage.setItem('weeklyReports', JSON.stringify(reports));
+
+            // Kayıtlı Raporlar sekmesini anında güncelle
+            loadReports();
+            
+            // Başarı mesajı göster
+            const successMsg = document.getElementById('successMessage');
+            successMsg.classList.add('show');
+            setTimeout(() => {
+                successMsg.classList.remove('show');
+            }, 5000);
+            
+            // Formu temizle
+            document.querySelectorAll('textarea').forEach(ta => ta.value = '');
+        }
+        
+        // PDF indirme
+        window.downloadPDF = function() {
+            if (!validateRequiredFields()) return;
+            window.print();
+        }
+        
+        // Rapor görüntüleme
+        window.viewReport = function(reportId) {
+            const reports = JSON.parse(localStorage.getItem('weeklyReports') || '[]');
+            const report = reports.find(r => r.id === reportId);
+            
+            if (!report) {
+                alert('Rapor bulunamadı!');
+                return;
+            }
+            
+            // Formu doldur
+            document.getElementById('reportDate').value = report.date;
+            document.getElementById('weekRange').value = report.weekRange;
+            document.getElementById('reportPreparer').value = report.preparer;
+            
+            // Donanım verilerini doldur
+            report.hardware.forEach((hw, index) => {
+                const cabin = index + 1;
+                document.querySelector(`.hardware-pc-${cabin}`).value = hw.pc;
+                document.querySelector(`.hardware-screen-${cabin}`).value = hw.screen;
+                document.querySelector(`.hardware-camera-${cabin}`).value = hw.camera;
+                document.querySelector(`.hardware-internet-${cabin}`).value = hw.internet;
+                document.querySelector(`.hardware-issue-${cabin}`).value = hw.issue;
+            });
+            
+            // Yazılım verilerini doldur
+            report.software.forEach((sw, index) => {
+                document.querySelector(`.software-status-${index}`).value = sw.status;
+                document.querySelector(`.software-desc-${index}`).value = sw.description;
+            });
+            
+            // Sorun bilgilerini doldur
+            if (report.problem) {
+                document.getElementById('problemType').value = report.problem.type || '';
+                document.getElementById('detectionTime').value = report.problem.detectionTime || '';
+                document.getElementById('interventionTime').value = report.problem.interventionTime || '';
+                document.getElementById('solutionStatus').value = report.problem.solutionStatus || '';
+                document.getElementById('solutionDetail').value = report.problem.solutionDetail || '';
+            }
+            
+            // Değerlendirmeleri doldur
+            document.getElementById('generalEvaluation').value = report.generalEvaluation || '';
+            document.getElementById('nextWeekPlans').value = report.nextWeekPlans || '';
+            
+            // Yeni Rapor sekmesine geç
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('new-report').classList.add('active');
+            document.querySelectorAll('.tab-button')[0].classList.add('active');
+            
+            // Sayfayı yukarı kaydır
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            alert('✅ Rapor yüklendi! İnceleyebilir veya düzenleyebilirsiniz.');
+        }
+        
+        // Rapor silme
+        window.deleteReport = function(reportId) {
+            if (!confirm('Bu raporu silmek istediğinizden emin misiniz?')) {
+                return;
+            }
+            
+            let reports = JSON.parse(localStorage.getItem('weeklyReports') || '[]');
+            reports = reports.filter(r => r.id !== reportId);
+            localStorage.setItem('weeklyReports', JSON.stringify(reports));
+
+            // Kayıtlı Raporlar sekmesini anında güncelle
+            loadReports();
+            
+            loadReports();
+            alert('✅ Rapor başarıyla silindi!');
+        }
+        
+        // Başlangıçta tablolari oluştur
+        function initializeTables() {
+            // Tablolar artık HTML'de tanımlı
+        }
+        
+        // Bugünün tarihini otomatik ayarla
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('reportDate').value = today;
+            initializeTables();
+            loadReports();
+        });
+        
+        // Raporları yükle
+        function loadReports() {
+            const reports = JSON.parse(localStorage.getItem('weeklyReports') || '[]');
+            const reportsList = document.getElementById('reportsList');
+            
+            if (reports.length === 0) {
+                reportsList.innerHTML = `
+                    <div class="empty-state">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z"></path>
+                            <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"></path>
+                        </svg>
+                        <h3>Henüz kaydedilmiş rapor bulunmuyor</h3>
+                        <p>Yeni bir rapor oluşturmak için "Yeni Rapor" sekmesine gidin</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            reportsList.innerHTML = reports.map(report => `
+                <div class="report-item">
+                    <div class="report-info">
+                        <h3>📊 ${report.weekRange || 'Hafta belirtilmemiş'}</h3>
+                        <p>📅 Tarih: ${report.date ? new Date(report.date).toLocaleDateString('tr-TR') : '—'}</p>
+                        <p>👤 Hazırlayan: ${report.preparer || 'Belirtilmemiş'}</p>
+                        <p>💾 Kaydedilme: ${report.savedAt}</p>
+                    </div>
+                    <div class="report-actions">
+                        <button class="btn-small btn-view" onclick="viewReport(${report.id})">👁️ Görüntüle</button>
+                        <button class="btn-small btn-delete" onclick="deleteReport(${report.id})">🗑️ Sil</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
